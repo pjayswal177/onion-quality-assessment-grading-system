@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7f2">
+  <title>Onion Quality Assessment and Grading System | INNOVEXA</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dashboard.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#overview" aria-label="Onion Quality home">
+        <span class="brand-mark" aria-hidden="true">O</span>
+        <span><strong>INNOVEXA</strong><small>SIH26031 · ONION QUALITY</small></span>
+      </a>
+      <p class="nav-label">WORKSPACE</p>
+      <nav>
+        <a class="nav-link active" href="#overview"><span class="nav-icon">▦</span>Overview</a>
+        <a class="nav-link" href="#manual-check"><span class="nav-icon">＋</span>Manual grade check</a>
+        <a class="nav-link" href="#recent-results"><span class="nav-icon">≡</span>Inspection log</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="status-dot"></span>
+        <div><strong>Simulation active</strong><small>Camera and scale are simulated</small></div>
+      </div>
+    </aside>
+
+    <main id="overview" class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">SIH26031 <span>/</span> Team INNOVEXA</div>
+        <span class="demo-badge"><span></span> SIMULATION RUNNING</span>
+      </header>
+
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">SIMULATED CONVEYOR <span>·</span> VISION · WEIGHING · SORTING</p>
+          <h1>Onion Quality Assessment and Grading System</h1>
+          <p class="intro">SIH26031 · Team INNOVEXA · Smart produce inspection prototype</p>
+        </div>
+        <span class="demo-tag">SIMULATION · NOT LIVE HARDWARE</span>
+      </section>
+
+      <section class="panel conveyor-panel" aria-label="Simulated conveyor">
+        <div class="conveyor-heading"><div><p class="eyebrow">VISION CHAMBER <span>·</span> SORTING GATES</p><h2>Conveyor simulation</h2></div><span class="live-indicator"><i></i> RANDOM SAMPLE FEED</span></div>
+        <canvas id="conveyor" width="900" height="260" aria-label="Onions moving through simulated camera inspection and grading gates"></canvas>
+        <div class="conveyor-controls">
+          <div class="control-actions"><button class="icon-button" id="toggle-simulation" type="button" title="Pause simulation" aria-label="Pause simulation">Ⅱ</button><button class="export-button" id="reset-counts" type="button">Reset counts</button></div>
+          <label class="range-control" for="defect-rate"><span>Defect rate</span><input id="defect-rate" type="range" min="0" max="60" value="25"><output id="defect-rate-value">25%</output></label>
+          <label class="range-control" for="belt-speed"><span>Belt speed</span><input id="belt-speed" type="range" min="1" max="6" value="3"><output id="belt-speed-value">0.3 m/s</output></label>
+        </div>
+      </section>
+
+      <section class="metric-grid" aria-label="Simulation summary">
+        <article class="metric"><div class="metric-label">DEFECT RATE <span class="grade-dot grade-review"></span></div><strong id="defect-rate-display">25%</strong><small>Simulated conveyor input</small></article>
+        <article class="metric"><div class="metric-label">BELT SPEED <span class="metric-symbol">↗</span></div><strong id="belt-speed-display">0.3</strong><small>Metres per second</small></article>
+        <article class="metric"><div class="metric-label">INSPECTED <span class="metric-symbol">◷</span></div><strong id="total-count">00</strong><small>This browser session</small></article>
+        <article class="metric"><div class="metric-label">REJECTED <span class="grade-dot grade-reject"></span></div><strong id="reject-count">00</strong><small>Current session</small></article>
+      </section>
+
+      <section class="grade-bins" aria-label="Grade distribution">
+        <article class="grade-bin grade-a"><small>Grade A</small><strong id="count-a">0</strong><span id="percent-a">0%</span></article>
+        <article class="grade-bin grade-b"><small>Grade B</small><strong id="count-b">0</strong><span id="percent-b">0%</span></article>
+        <article class="grade-bin grade-c"><small>Grade C</small><strong id="count-c">0</strong><span id="percent-c">0%</span></article>
+        <article class="grade-bin grade-reject"><small>Rejected</small><strong id="count-reject">0</strong><span id="percent-reject">0%</span></article>
+      </section>
+
+      <section class="work-grid">
+        <section class="panel assessment-panel" id="manual-check">
+          <div class="panel-heading">
+            <div><p class="eyebrow">RULES ENGINE · MANUAL INPUT</p><h2>Manual grade check</h2></div>
+            <span class="step-mark">LIVE PREVIEW</span>
+          </div>
+          <p class="measurement-note">Enter what the camera measured and see the grade the rules assign.</p>
+          <form id="assessment-form">
+            <div class="form-row">
+              <label class="field-label" for="diameter">Diameter (mm)
+                <input id="diameter" type="number" min="0" max="300" step="0.1" value="52" required>
+              </label>
+              <label class="field-label" for="defect-area">Defect area (%)
+                <input id="defect-area" type="number" min="0" max="100" step="0.1" value="3" required>
+              </label>
+            </div>
+            <div class="form-row form-row-spaced">
+              <label class="field-label" for="weight">Weight (g)
+                <input id="weight" type="number" min="0" max="5000" step="0.1" value="110" required>
+              </label>
+              <label class="field-label" for="roundness">Roundness (0-1)
+                <input id="roundness" type="number" min="0" max="1" step="0.01" value="0.9" required>
+              </label>
+            </div>
+            <label class="check-row" for="rot-fungus"><input id="rot-fungus" type="checkbox"><span>Rot / fungus detected</span></label>
+            <div class="manual-result" id="manual-result" aria-live="polite"></div>
+            <div class="rule-note">Reject if rot/fungus is detected or defects exceed 25%. A: diameter ≥55 mm, weight ≥100 g, roundness ≥0.85, defects ≤2%. B: ≥40 mm, ≥50 g, ≥0.70, defects ≤8%. Otherwise C.</div>
+          </form>
+        </section>
+
+        <section class="panel result-panel" aria-live="polite" aria-labelledby="result-title">
+          <div class="panel-heading">
+            <div><p class="eyebrow">RULE OUTPUT</p><h2 id="result-title">Manual grade result</h2></div>
+            <span class="demo-tag">RULE BASED</span>
+          </div>
+          <div id="empty-result" class="empty-result">
+            <div class="empty-ring" aria-hidden="true"><span>O</span></div>
+            <strong>Enter values to check a grade</strong>
+            <p>The result updates from the entered measurements and displays the matching rule.</p>
+          </div>
+          <div id="result-content" class="result-content" hidden>
+            <div class="grade-summary"><div><span class="result-label">ASSIGNED GRADE</span><strong id="result-grade">Grade B</strong></div><span id="result-condition" class="condition-pill">PASS</span></div>
+            <div class="result-data">
+              <div><span>Diameter</span><strong id="result-diameter">Unknown</strong></div>
+              <div><span>Defect area</span><strong id="result-defect">Unknown</strong></div>
+              <div><span>Weight</span><strong id="result-weight">Unknown</strong></div>
+              <div><span>Roundness</span><strong id="result-roundness">Unknown</strong></div>
+            </div>
+            <div class="reason-block"><span class="result-label">WHY THIS RESULT</span><ul id="result-reasons"></ul></div>
+            <p class="provisional-note">Prototype rule output only. The real target uses OpenCV + YOLOv8 on Raspberry Pi.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel history-panel" id="recent-results">
+        <div class="history-heading">
+          <div><p class="eyebrow">CONVEYOR FEED · RANDOMIZED SAMPLE DATA</p><h2>Live inspection log</h2></div>
+          <button class="export-button" id="export-csv" type="button" title="Export session results as CSV"><span aria-hidden="true">↓</span> Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>SAMPLE</th><th>DIAMETER</th><th>DEFECTS</th><th>WEIGHT</th><th>ROUNDNESS</th><th>GRADE</th></tr></thead>
+            <tbody id="results-table"></tbody>
+          </table>
+        </div>
+        <p class="session-note">Onion appearance and measurements are randomly generated for this simulation. Refresh to reset the session.</p>
+      </section>
+      <footer>SIH26031 <span>·</span> TEAM INNOVEXA <span class="footer-right">SIMULATION ONLY — AI AND HARDWARE NOT CONNECTED</span></footer>
+    </main>
+  </div>
+</body>
+</html>
