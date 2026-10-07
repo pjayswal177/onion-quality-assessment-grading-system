@@ -341,7 +341,123 @@ It does **not** currently provide image upload/inference, trained AI predictions
 6. Integrate a physical conveyor and diverter with safety interlocks and separately measured mechanical performance.
 7. Validate grading thresholds with the intended buyer, market, or standard before deployment.
 
-## 17. Conclusion
+## 17. College Project Appendix
+
+### 17.1 User Use Cases
+
+```mermaid
+flowchart LR
+    Operator[Operator] --> Upload[Upload or capture onion image]
+    Operator --> Manual[Enter measured attributes]
+    Operator --> Inspect[Review grade, reasons, and confidence]
+    Operator --> History[View inspection history]
+    Operator --> Export[Export CSV report]
+    Admin[Administrator] --> Config[Configure thresholds and model version]
+    Admin --> Dataset[Manage approved dataset]
+    Admin --> Metrics[Review evaluation metrics]
+```
+
+The deployed simulation currently implements a subset: manual grading, simulated conveyor activity, a session log, and CSV export. Authentication, dataset management, model inference, and persistent history are proposed features.
+
+### 17.2 Proposed User Interface Pages
+
+- **Dashboard:** simulated line status, inspection counts, grade distribution, and recent results.
+- **Manual grade check:** diameter, defect area, weight, roundness, and rot/fungus input with a rule explanation.
+- **Image assessment:** planned upload/capture page for model-backed results; not currently implemented.
+- **History and reports:** planned persistent records and filtered CSV export; current export covers the browser session only.
+- **Settings:** planned grade thresholds, confidence cutoff, and model-version information.
+
+### 17.3 Optional Composite Quality Score
+
+If a single score is required for a demonstration, one possible **unvalidated example** is:
+
+$$
+Q = 0.20S + 0.20H + 0.20C + 0.40V
+$$
+
+where $S$, $H$, $C$, and $V$ are normalized 0-100 scores for size, shape, color, and visible surface condition. A higher $V$ must mean fewer or less severe defects. These weights are placeholders: calibrate them with expert-labeled samples and report their limitations. The score must not override the explicit Reject rule or the A/B/C thresholds unless a separately validated score-to-grade policy is adopted. The current simulation does not calculate this composite score.
+
+### 17.4 Dataset Organization
+
+The model dataset should label visible conditions separately from final grades. Final grades depend on measurements and configured rules, not image class alone.
+
+```text
+dataset/
+  images/
+    train/
+    validation/
+    test/
+  annotations/
+    labels.csv
+    defects.json
+```
+
+Each annotation should identify a relative image path, onion/sample ID, capture session, condition label, and (for detection/segmentation) defect region. Keep all images of the same onion or capture session in one split before augmentation to reduce data leakage. Obtain permission for images and record the source and labeling procedure.
+
+### 17.5 Processing Algorithm
+
+1. Validate image type, size, and decodability.
+2. Normalize image dimensions and apply the versioned training preprocessing.
+3. Locate the onion and predict the supported visible-condition class and confidence.
+4. Obtain calibrated diameter and weight from measurements; do not infer these from an uncalibrated RGB image.
+5. Estimate defect area only using a defined, validated segmentation or measurement method.
+6. If confidence is below the configured cutoff or required evidence is missing, mark the result `needs_review`.
+7. Apply the deterministic rules in Section 5 and return grade, measured attributes, and reasons.
+8. Store the result when a persistent backend is enabled; otherwise label it as session-only simulation.
+
+### 17.6 Hardware and Software Requirements
+
+| Category | Prototype requirement |
+|---|---|
+| Development computer | Standard laptop/desktop; 8 GB RAM recommended for development |
+| Image input | Phone, webcam, or approved sample images with consistent lighting |
+| Physical measurements | Calibrated caliper/reference target for diameter and a scale for weight |
+| Optional edge target | Raspberry Pi only after model and dependency compatibility are verified |
+| Operating system | Windows, Linux, or macOS for development |
+| Software target | Python 3.11+, FastAPI, OpenCV, NumPy, and a selected ML runtime for the planned backend |
+| Dashboard | HTML, CSS, and JavaScript; GitHub Pages hosts the static simulation |
+| Storage | SQLite is the proposed local database; CSV is the current export format |
+
+GPU hardware is optional for a small transfer-learning experiment, but training speed depends on the model, image size, dataset, and available compute. Do not promise a specific inference time before benchmarking the target hardware.
+
+### 17.7 Test Plan
+
+| Test | Input or condition | Expected result |
+|---|---|---|
+| Reject threshold | Rot/fungus true | Reject, regardless of other measurements |
+| Defect cutoff | Defect area 25% and 25.1% | 25% continues through grade rules; 25.1% is Reject |
+| Grade A boundary | 55 mm, 100 g, 0.85 roundness, 2% defects | Grade A |
+| Grade B boundary | 40 mm, 50 g, 0.70 roundness, 8% defects | Grade B when A conditions are not all met |
+| Fallback grade | Valid inputs that meet neither A nor B | Grade C |
+| Missing measurements | Diameter or weight absent | Unknown value retained; review/incomplete policy applied |
+| Low-confidence inference | Confidence below configured cutoff | `needs_review`, not a certain automatic result |
+| Invalid upload | Unsupported type, oversized, or corrupt image | Actionable client error; no stack trace or local path |
+| Model evaluation | Held-out, onion-separated test set | Per-class metrics and confusion matrix reported |
+| Simulation label | Demo data displayed | Clearly marked simulated, never called live sensor or AI output |
+
+### 17.8 Example Development Schedule
+
+| Week | Planned activity |
+|---|---|
+| 1 | Requirements, grading-rule confirmation, and related-work review |
+| 2 | Dataset plan, annotation guide, and UI wireframes |
+| 3 | Image preprocessing and pure grading logic with tests |
+| 4 | Dashboard and deterministic simulation |
+| 5 | API schemas and validation |
+| 6 | Baseline model training and evaluation, if data is available |
+| 7 | Persistence and CSV reporting |
+| 8 | Integration, boundary testing, and demo rehearsal |
+| 9 | Results analysis and documentation completion |
+
+Adjust the schedule to the actual semester duration and dataset availability; do not report planned work as completed work.
+
+### 17.9 Expected Deliverables and Benefits
+
+**Deliverables:** source code, documented grading rules, labeled dataset or reproducible data source, model and evaluation report if trained, test results, user guide, project report, and presentation. Large/private images and model weights should not be committed without permission; document how to obtain them.
+
+**Potential benefits:** reduced repetitive inspection effort, more consistent first-pass sorting, explainable decisions, and digital batch records. These are intended benefits and require user trials before they can be claimed as measured outcomes.
+
+## 18. Conclusion
 
 The project defines a modular route from onion image acquisition and optional physical measurements to explainable grading and dashboard reporting. Its grading rules are deterministic and testable, while the proposed AI pipeline requires suitable labels, calibration, and evaluation before it can make reliable image-based claims. The current hosted dashboard demonstrates the interaction flow through simulation; it is not yet an operational AI grader or a connected mechanical sorting system.
 
