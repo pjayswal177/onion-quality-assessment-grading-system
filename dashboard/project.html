@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7f2">
+  <meta name="description" content="College project brief for the Onion Quality Assessment and Grading System by Team INNOVEXA.">
+  <title>Project Brief | Onion Quality | INNOVEXA</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="index.html#overview" aria-label="Onion Quality home">
+        <span class="brand-mark" aria-hidden="true">O</span>
+        <span><strong>INNOVEXA</strong><small>SIH26031 · ONION QUALITY</small></span>
+      </a>
+      <p class="nav-label">WORKSPACE</p>
+      <nav>
+        <a class="nav-link" href="index.html#overview"><span class="nav-icon">▦</span>Overview</a>
+        <a class="nav-link" href="index.html#manual-check"><span class="nav-icon">＋</span>Manual grade check</a>
+        <a class="nav-link" href="index.html#recent-results"><span class="nav-icon">≡</span>Inspection log</a>
+        <a class="nav-link active" href="project.html" aria-current="page"><span class="nav-icon">i</span>Project brief</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="status-dot"></span>
+        <div><strong>Prototype</strong><small>AI and hardware not connected</small></div>
+      </div>
+    </aside>
+
+    <main class="main-content project-page">
+      <header class="topbar">
+        <div class="breadcrumb"><a href="index.html">Dashboard</a> <span>/</span> Project brief</div>
+        <span class="demo-badge"><span></span> COLLEGE PROJECT</span>
+      </header>
+
+      <section class="page-heading project-heading">
+        <div>
+          <p class="eyebrow">SIH26031 <span>·</span> TEAM INNOVEXA</p>
+          <h1>Onion Quality Assessment and Grading System</h1>
+          <p class="intro">Image-assisted inspection and explainable size/quality grading prototype.</p>
+        </div>
+        <a class="export-button" href="https://github.com/pjayswal177/onion-quality-assessment-grading-system/blob/main/PROJECT_DOCUMENTATION.md">Full project report <span aria-hidden="true">↗</span></a>
+      </section>
+
+      <div class="project-notice"><strong>Prototype status:</strong> the public dashboard simulates the conveyor and uses manual grading inputs. It does not run an image model, read real sensors, or save records to a database.</div>
+
+      <section class="project-section">
+        <p class="eyebrow">OVERVIEW</p>
+        <h2>Project objective</h2>
+        <p>Design a computer-vision-assisted system that evaluates visible onion characteristics and assigns an explainable grade. The proposed system analyzes size, shape, color, spots, surface damage, and visible defects, then presents results and inspection statistics in a dashboard.</p>
+        <p>Image-based diameter requires a known scale or calibrated camera setup. Weight must come from a scale or supplied measurement. An ordinary RGB image cannot establish either value on its own.</p>
+      </section>
+
+      <section class="project-section">
+        <p class="eyebrow">PROCESS</p>
+        <h2>Simple workflow</h2>
+        <ol class="workflow-list">
+          <li>Onion image</li>
+          <li>Preprocessing</li>
+          <li>Feature extraction</li>
+          <li>Defect detection</li>
+          <li>Quality assessment</li>
+          <li>Grade</li>
+          <li>Dashboard and report</li>
+        </ol>
+        <p class="section-note">A numerical quality score requires a documented formula and validation. Current demo output comes from explicit grading rules, not an AI score.</p>
+      </section>
+
+      <section class="project-section">
+        <p class="eyebrow">SYSTEM DESIGN</p>
+        <h2>Main modules</h2>
+        <div class="project-table-wrap">
+          <table class="project-table">
+            <thead><tr><th>Module</th><th>Purpose</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Image acquisition</td><td>Capture or upload an onion image.</td><td>Planned</td></tr>
+              <tr><td>Image processing</td><td>Decode, resize, normalize, and prepare the image.</td><td>Planned: OpenCV</td></tr>
+              <tr><td>Feature and defect analysis</td><td>Assess shape, color, and visible defect regions.</td><td>Planned: model depends on labeled data</td></tr>
+              <tr><td>Quality grading</td><td>Apply deterministic thresholds and explain the result.</td><td>Manual rules in demo</td></tr>
+              <tr><td>Dashboard</td><td>Show simulated conveyor, grade counts, manual check, and log.</td><td>Implemented simulation</td></tr>
+              <tr><td>Reports and storage</td><td>Retain inspections and generate batch reports.</td><td>CSV session export; database planned</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="project-section">
+        <p class="eyebrow">RULES ENGINE</p>
+        <h2>Prototype grading rules</h2>
+        <p>Apply rules in this order. These thresholds are project-provided prototype values, not a claim of compliance with a commercial standard.</p>
+        <div class="project-table-wrap">
+          <table class="project-table">
+            <thead><tr><th>Grade</th><th>Rule</th></tr></thead>
+            <tbody>
+              <tr><td>Rejected</td><td>Rot/fungus detected or defect area greater than 25%.</td></tr>
+              <tr><td>A · High quality</td><td>Diameter ≥55 mm, weight ≥100 g, roundness ≥0.85, and defects ≤2%.</td></tr>
+              <tr><td>B · Good quality</td><td>Diameter ≥40 mm, weight ≥50 g, roundness ≥0.70, and defects ≤8%, after the Reject and A checks.</td></tr>
+              <tr><td>C · Average quality</td><td>Does not meet all Grade A or Grade B conditions and is not rejected.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="project-section project-two-col">
+        <div>
+          <p class="eyebrow">TECHNOLOGY</p>
+          <h2>Proposed stack</h2>
+          <ul class="project-list">
+            <li><strong>Frontend:</strong> HTML, CSS, and JavaScript</li>
+            <li><strong>Backend:</strong> Python and FastAPI</li>
+            <li><strong>Vision:</strong> OpenCV with YOLOv8 when data and model support it</li>
+            <li><strong>Database:</strong> SQLite for a local prototype</li>
+            <li><strong>Reports:</strong> CSV export</li>
+          </ul>
+        </div>
+        <div>
+          <p class="eyebrow">EVALUATION</p>
+          <h2>How to test</h2>
+          <ul class="project-list">
+            <li>Use onion-separated train, validation, and test data.</li>
+            <li>Report precision, recall, F1, and a confusion matrix by class.</li>
+            <li>Test A/B/C/Reject threshold boundaries and missing measurements.</li>
+            <li>Measure latency and manual-review rate on stated hardware.</li>
+            <li>Do not treat randomized simulation values as model results.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="project-section">
+        <p class="eyebrow">LIMITATIONS</p>
+        <h2>Current boundaries</h2>
+        <p>Surface images cannot identify hidden internal defects or certify food safety. Lighting, background, variety, image quality, and annotation consistency affect model behavior. A bounding box does not provide reliable defect-area percentage; that requires a validated segmentation or measurement method. Validate all thresholds against the intended market before operational use.</p>
+      </section>
+
+      <footer>SIH26031 <span>·</span> TEAM INNOVEXA <span class="footer-right">SIMULATION ONLY — AI AND HARDWARE NOT CONNECTED</span></footer>
+    </main>
+  </div>
+</body>
+</html>
