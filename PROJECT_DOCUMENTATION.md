@@ -99,6 +99,12 @@ else:
 
 A bounding-box detector identifies approximate defect locations but does not directly measure defect area accurately. If the grading rule depends on defect-area percentage, use a validated segmentation mask or another documented area-measurement method. State the measurement definition and calibration procedure.
 
+### Simple Workflow
+
+**Onion image → preprocessing → feature extraction → defect detection → quality score → grade → dashboard**
+
+The quality-score formula and its mapping to grades must be defined and validated before use. The current prototype applies explicit threshold rules and does not calculate a validated composite quality score.
+
 ## 7. System Architecture
 
 The grading rules are kept independent of the API and model runtime so they can be tested in isolation. The proposed online flow is:
