@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f4f7f2">
+  <title>Onion Quality Assessment and Grading System | INNOVEXA</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/dashboard.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Main navigation">
+      <a class="brand" href="#overview" aria-label="Onion Quality home">
+        <span class="brand-mark" aria-hidden="true">O</span>
+        <span><strong>INNOVEXA</strong><small>SIH26031 · ONION QUALITY</small></span>
+      </a>
+      <p class="nav-label">WORKSPACE</p>
+      <nav>
+        <a class="nav-link active" href="#overview"><span class="nav-icon">▦</span>Overview</a>
+        <a class="nav-link" href="#camera-inspection"><span class="nav-icon">◉</span>Camera inspection</a>
+        <a class="nav-link" href="#manual-check"><span class="nav-icon">＋</span>Grade this onion</a>
+        <a class="nav-link" href="#recent-results"><span class="nav-icon">≡</span>Inspection log</a>
+        <a class="nav-link" href="project.html"><span class="nav-icon">i</span>Project brief</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="status-dot" id="camera-status-dot"></span>
+        <div><strong id="camera-sidebar-status">Camera not connected</strong><small>Captured images stay in this session</small></div>
+      </div>
+    </aside>
+
+    <main id="overview" class="main-content">
+      <header class="topbar">
+        <div class="breadcrumb">SIH26031 <span>/</span> Team INNOVEXA</div>
+        <span class="demo-badge"><span></span> LIVE CAMERA · MANUAL REVIEW</span>
+      </header>
+
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">REAL IMAGE CAPTURE <span>·</span> OPERATOR-LED ASSESSMENT</p>
+          <h1>Onion Quality Assessment and Grading System</h1>
+          <p class="intro">SIH26031 · Team INNOVEXA · Smart produce inspection prototype</p>
+        </div>
+        <span class="demo-tag">NO AUTOMATIC VISION MODEL</span>
+      </section>
+
+      <section class="panel camera-panel" id="camera-inspection" aria-label="Live camera inspection">
+        <div class="conveyor-heading"><div><p class="eyebrow">IMAGE ACQUISITION <span>·</span> THIS DEVICE</p><h2>Capture a real onion</h2></div><span class="live-indicator" id="camera-live-indicator"><i></i> CAMERA OFF</span></div>
+        <div class="camera-stage">
+          <video id="camera-preview" autoplay playsinline muted aria-label="Live camera preview" hidden></video>
+          <canvas id="capture-preview" aria-label="Captured onion image" hidden></canvas>
+          <div class="camera-placeholder" id="camera-placeholder"><span aria-hidden="true">◉</span><strong>Camera preview will appear here</strong><small>Allow camera access when your browser asks.</small></div>
+        </div>
+        <div class="camera-controls">
+          <div class="control-actions"><button class="submit-button camera-action" id="start-camera" type="button">Start camera <span aria-hidden="true">◉</span></button><button class="export-button" id="capture-frame" type="button" disabled>Capture onion</button><button class="export-button" id="retake-frame" type="button" hidden>Retake</button></div>
+          <p class="camera-message" id="camera-message" aria-live="polite">Camera access requires localhost or a secure HTTPS page.</p>
+        </div>
+      </section>
+
+      <section class="metric-grid" aria-label="Inspection summary">
+        <article class="metric"><div class="metric-label">SAVED INSPECTIONS <span class="metric-symbol">◷</span></div><strong id="total-count">00</strong><small>This browser session</small></article>
+        <article class="metric"><div class="metric-label">REJECTED <span class="grade-dot grade-reject"></span></div><strong id="reject-count">00</strong><small>Based on entered checks</small></article>
+        <article class="metric"><div class="metric-label">CAMERA <span class="grade-dot" id="camera-metric-dot"></span></div><strong class="metric-status" id="camera-status-display">Off</strong><small>Browser camera connection</small></article>
+        <article class="metric"><div class="metric-label">CURRENT IMAGE <span class="metric-symbol">◉</span></div><strong class="metric-status" id="capture-status-display">None</strong><small>Capture before grading</small></article>
+      </section>
+
+      <section class="grade-bins" aria-label="Grade distribution">
+        <article class="grade-bin grade-a"><small>Grade A</small><strong id="count-a">0</strong><span id="percent-a">0%</span></article>
+        <article class="grade-bin grade-b"><small>Grade B</small><strong id="count-b">0</strong><span id="percent-b">0%</span></article>
+        <article class="grade-bin grade-c"><small>Grade C</small><strong id="count-c">0</strong><span id="percent-c">0%</span></article>
+        <article class="grade-bin grade-reject"><small>Rejected</small><strong id="count-reject">0</strong><span id="percent-reject">0%</span></article>
+      </section>
+
+      <section class="work-grid">
+        <section class="panel assessment-panel" id="manual-check">
+          <div class="panel-heading">
+            <div><p class="eyebrow">CAPTURED IMAGE · MEASURED INPUT</p><h2>Grade this onion</h2></div>
+            <span class="step-mark">PROTOTYPE RULES</span>
+          </div>
+          <p class="measurement-note">Review the captured image yourself and enter actual scale/ruler measurements. The camera does not automatically detect defects, size, shape, or weight.</p>
+          <form id="assessment-form">
+            <div class="form-row">
+              <label class="field-label" for="diameter">Diameter (mm)
+                <input id="diameter" type="number" min="0" max="300" step="0.1" placeholder="Measured value" required>
+              </label>
+              <label class="field-label" for="defect-area">Defect area (%)
+                <input id="defect-area" type="number" min="0" max="100" step="0.1" placeholder="Estimate from image" required>
+              </label>
+            </div>
+            <div class="form-row form-row-spaced">
+              <label class="field-label" for="weight">Weight (g)
+                <input id="weight" type="number" min="0" max="5000" step="0.1" placeholder="Measured value" required>
+              </label>
+              <label class="field-label" for="roundness">Roundness (0-1)
+                <input id="roundness" type="number" min="0" max="1" step="0.01" placeholder="Estimate from image" required>
+              </label>
+            </div>
+            <label class="check-row" for="rot-fungus"><input id="rot-fungus" type="checkbox"><span>Rot / fungus detected</span></label>
+            <div class="manual-result" id="manual-result" aria-live="polite"></div>
+            <div class="rule-note">Reject if rot/fungus is detected or defects exceed 25%. A: diameter ≥55 mm, weight ≥100 g, roundness ≥0.85, defects ≤2%. B: ≥40 mm, ≥50 g, ≥0.70, defects ≤8%. Otherwise C.</div>
+            <button class="submit-button save-inspection" id="save-inspection" type="submit" disabled>Save inspection <span aria-hidden="true">→</span></button>
+          </form>
+        </section>
+
+        <section class="panel result-panel" aria-live="polite" aria-labelledby="result-title">
+          <div class="panel-heading">
+            <div><p class="eyebrow">RULE OUTPUT</p><h2 id="result-title">Manual grade result</h2></div>
+            <span class="demo-tag">RULE BASED</span>
+          </div>
+          <div id="empty-result" class="empty-result">
+            <div class="empty-ring" aria-hidden="true"><span>O</span></div>
+            <strong>Capture an onion to begin</strong>
+            <p>After capturing, enter real measurements and review the visible condition to calculate a prototype grade.</p>
+          </div>
+          <div id="result-content" class="result-content" hidden>
+            <div class="grade-summary"><div><span class="result-label">ASSIGNED GRADE</span><strong id="result-grade">Grade B</strong></div><span id="result-condition" class="condition-pill">PASS</span></div>
+            <div class="result-data">
+              <div><span>Diameter</span><strong id="result-diameter">Unknown</strong></div>
+              <div><span>Defect area</span><strong id="result-defect">Unknown</strong></div>
+              <div><span>Weight</span><strong id="result-weight">Unknown</strong></div>
+              <div><span>Roundness</span><strong id="result-roundness">Unknown</strong></div>
+            </div>
+            <div class="reason-block"><span class="result-label">WHY THIS RESULT</span><ul id="result-reasons"></ul></div>
+            <p class="provisional-note">Rule-based operator assessment only. No AI prediction, calibrated camera measurement, or scale reading is connected.</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="panel history-panel" id="recent-results">
+        <div class="history-heading">
+          <div><p class="eyebrow">CAPTURED IMAGES · OPERATOR-ENTERED MEASUREMENTS</p><h2>Inspection log</h2></div>
+          <button class="export-button" id="export-csv" type="button" title="Export session results as CSV"><span aria-hidden="true">↓</span> Export CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>SAMPLE</th><th>IMAGE</th><th>DIAMETER</th><th>DEFECTS</th><th>WEIGHT</th><th>ROUNDNESS</th><th>GRADE</th></tr></thead>
+            <tbody id="results-table"></tbody>
+          </table>
+        </div>
+        <p class="session-note">Records are kept only in this browser session. Captured images are not uploaded or retained after refresh.</p>
+      </section>
+      <footer>SIH26031 <span>·</span> TEAM INNOVEXA <span class="footer-right">REAL CAMERA CAPTURE · MANUAL ASSESSMENT</span></footer>
+    </main>
+  </div>
+</body>
+</html>
