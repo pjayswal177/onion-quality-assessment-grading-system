@@ -157,7 +157,7 @@ Then open `http://localhost:8081` in a browser. Stop the server with `Ctrl+C`. I
 
 ### Current implementation status
 
-The dashboard is a local interactive simulation. It animates randomly generated onions on a canvas conveyor, allows defect-rate and belt-speed controls, applies the grading rules above, updates grade counts, logs simulated measurements, and exports the session log as CSV. The manual grade checker uses entered measurements and the same rules. The current prototype does not run YOLOv8/OpenCV inference, connect to a Raspberry Pi, camera, scale, or physical conveyor, or save results in a database. Simulation output is not real inspection data.
+The dashboard requests browser camera access to preview and capture real onion images. Operators review each captured image, enter actual diameter and weight measurements, estimate visible defects and roundness, and save a session-only inspection with a rule-based grade. Captures and logged thumbnails stay in browser memory and are not uploaded; CSV export includes the entered values but not image data. Camera access requires localhost or HTTPS and user permission. The prototype does not run YOLOv8/OpenCV inference, connect to a scale or physical conveyor, or infer weight/real-world dimensions from an ordinary image. Results are not validated commercial grades.
 
 ## Publish the Dashboard with GitHub Pages
 

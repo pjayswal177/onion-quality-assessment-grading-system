@@ -5,7 +5,7 @@
 **Team:** INNOVEXA  
 **Project type:** Computer-vision-assisted onion assessment and grading prototype
 
-> **Implementation status:** The published application is a browser-based simulation. Its conveyor measurements are randomized, and its manual grade checker applies the prototype rules below. It does not currently perform image inference, use physical sensors, or persist records. The AI, API, and database sections describe the proposed system, not completed functionality.
+> **Implementation status:** The dashboard captures real onion images through browser camera access and applies the prototype rules to operator-entered measurements and visual estimates. Captured-image records exist only in browser memory for the current session. It does not perform image inference, use physical sensors, or infer real-world size/weight from an image. The AI, API, and database sections describe the proposed system, not completed functionality.
 
 ## Abstract
 
@@ -357,13 +357,13 @@ flowchart LR
     Admin --> Metrics[Review evaluation metrics]
 ```
 
-The deployed simulation currently implements a subset: manual grading, simulated conveyor activity, a session log, and CSV export. Authentication, dataset management, model inference, and persistent history are proposed features.
+The dashboard currently implements browser camera capture, operator-entered grading, a session log with captured-image thumbnails, and CSV export. Authentication, dataset management, model inference, sensor integration, and persistent history are proposed features.
 
 ### 17.2 Proposed User Interface Pages
 
-- **Dashboard:** simulated line status, inspection counts, grade distribution, and recent results.
-- **Manual grade check:** diameter, defect area, weight, roundness, and rot/fungus input with a rule explanation.
-- **Image assessment:** planned upload/capture page for model-backed results; not currently implemented.
+- **Dashboard:** camera status, saved inspection counts, grade distribution, and recent captured results.
+- **Image assessment:** capture a real image from the browser camera for operator review; no automated model inference is currently connected.
+- **Grade this onion:** enter measured diameter and weight plus visual defect/roundness estimates and receive a rule explanation.
 - **History and reports:** planned persistent records and filtered CSV export; current export covers the browser session only.
 - **Settings:** planned grade thresholds, confidence cutoff, and model-version information.
 
